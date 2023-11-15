@@ -7,6 +7,8 @@ import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
 import { Title1, Title2 } from './App.styled';
 
+const storageKey = 'contacts';
+
 export class App extends Component {
   state = {
     contacts: [
@@ -17,6 +19,22 @@ export class App extends Component {
     ],
     filter: '',
   };
+
+  componentDidUpdate(prevPrors, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      window.localStorage.setItem(
+        storageKey,
+        JSON.stringify(this.state.contacts)
+      );
+    }
+  }
+
+  componentDidMount() {
+    const savedContacts = window.localStorage.getItem(storageKey);
+    if (savedContacts !== null) {
+      this.setState({ contacts: JSON.parse(savedContacts) });
+    }
+  }
 
   onInput = evt => {
     this.setState({ [evt.name]: evt.value });
